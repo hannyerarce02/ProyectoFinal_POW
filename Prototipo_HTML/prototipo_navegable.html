@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Territorio Consciente - Prototipo</title>
+
+<!-- ===================================================================
+     PROYECTO: Territorio Consciente
+     Aula Virtual de Educacion Ambiental y Ciudadana
+     Grupo TAD 
+     Integrantes: Hannyer Arce, Kevin Tabares, Ever Delgado
+
+     Prototipo navegable 
+     =================================================================== -->
+
+<style>
+/* ===================================================================
+   ESTILOS GENERALES
+   =================================================================== */
+body {
+  margin: 0;
+  background-color: #F8F5EE;
+  color: #1A1F1B;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 { margin: 0 0 10px 0; }
+p { margin: 0 0 12px 0; }
+
+/* ===================================================================
+   ENCABEZADO Y MENU DE NAVEGACION
+   =================================================================== */
+#encabezado {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E4DFD3;
+  padding: 10px 20px;
+}
+
+#barra {
+  max-width: 1050px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+#logo {
+  font-size: 18px;
+  font-weight: bold;
+  color: #123D2A;
+  cursor: pointer;
+}
+
+#menu button {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 6px;
+  padding: 7px 12px;
+  margin: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: #5C6660;
+  cursor: pointer;
+}
+
+#menu button:hover { background-color: #E3EFE5; color: #123D2A; }
+
+#contador-semillas {
+  background-color: #E3EFE5;
+  color: #123D2A;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* ===================================================================
+   ESTRUCTURA DE LAS VENTANAS (se muestra una a la vez)
+   =================================================================== */
+.ventana { display: none; }
+.ventana.visible { display: block; }
+
+.contenido {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 25px 20px 60px 20px;
+}
+
+.contenido-angosto { max-width: 680px; }
+
+.ruta { font-size: 13px; color: #5C6660; margin-bottom: 15px; }
+
+/* ===================================================================
+   BOTONES
+   =================================================================== */
+.boton {
+  background-color: #123D2A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 18px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.boton:hover { background-color: #2A6B4A; }
+.boton-claro { background-color: #FFFFFF; color: #123D2A; border: 1px solid #E4DFD3; }
+.boton-naranja { background-color: #C2761F; }
+.boton-ancho { width: 100%; margin-top: 15px; }
+.boton-pequeno { padding: 7px 13px; font-size: 13px; }
+
+/* ===================================================================
+   CAJAS Y TARJETAS
+   =================================================================== */
+.caja {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.fila { display: flex; flex-wrap: wrap; gap: 18px; }
+
+.tarjeta-curso {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 10px;
+  padding: 16px;
+  width: 300px;
+  flex-grow: 1;
+}
+
+.imagen-curso {
+  height: 70px;
+  border-radius: 8px;
+  background-color: #123D2A;
+  margin-bottom: 10px;
+}
+
+.color-2 { background-color: #3C5A3A; }
+.color-3 { background-color: #C2761F; }
+.color-4 { background-color: #1F4E5F; }
+
+.etiqueta { font-size: 12px; color: #2A6B4A; font-weight: bold; }
+.texto-gris { color: #5C6660; font-size: 14px; }
+
+.aviso {
+  background-color: #E3EFE5;
+  color: #123D2A;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 14px;
+}
+
+.aviso-error {
+  background-color: #FBE9E4;
+  color: #8A2B14;
+}
+
+/* ===================================================================
+   PORTADA (banner de la ventana de inicio)
+   =================================================================== */
+#portada { background-color: #123D2A; color: #FFFFFF; padding: 45px 20px; }
+#portada-texto { max-width: 1050px; margin: 0 auto; }
+#portada h1 { font-size: 34px; max-width: 500px; }
+#portada p { color: #C6D6C6; max-width: 560px; }
+
+/* ===================================================================
+   FORMULARIOS
+   =================================================================== */
+.formulario {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 10px;
+  padding: 25px;
+  max-width: 380px;
+  margin: 35px auto;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: #5C6660;
+  font-weight: bold;
+  margin: 12px 0 5px 0;
+}
+
+input, select, textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #E4DFD3;
+  border-radius: 6px;
+  background-color: #F8F5EE;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.enlace-texto {
+  background: none;
+  border: none;
+  color: #2A6B4A;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ===================================================================
+   AULA
+   =================================================================== */
+#lista-modulos button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#lista-modulos button:hover { background-color: #F8F5EE; }
+.modulo-actual { background-color: #E3EFE5; font-weight: bold; }
+
+.video {
+  height: 150px;
+  background-color: #123D2A;
+  color: #C6D6C6;
+  border-radius: 8px;
+  text-align: center;
+  padding-top: 65px;
+  box-sizing: border-box;
+  font-size: 14px;
+  margin: 15px 0;
+}
+
+.fuente {
+  font-size: 13px;
+  color: #5C6660;
+  border-left: 3px solid #E3EFE5;
+  padding-left: 10px;
+}
+
+.barra-progreso {
+  height: 8px;
+  background-color: #E3EFE5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.barra-progreso div { height: 8px; background-color: #2A6B4A; }
+
+/* ===================================================================
+   JUEGOS (evaluaciones)
+   =================================================================== */
+#juego { max-width: 600px; margin: 0 auto; text-align: center; }
+
+#pregunta { font-size: 22px; font-weight: bold; margin: 25px 0 5px 0; }
+
+.opcion {
+  display: block;
+  width: 100%;
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+}
+
+.opcion:hover { border-color: #2A6B4A; }
+.correcta { background-color: #E3EFE5; border-color: #2A6B4A; }
+.incorrecta { background-color: #FBE9E4; border-color: #C0563F; }
+
+.tarjeta-juego {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 20px;
+  padding: 9px 14px;
+  margin: 4px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tarjeta-juego.seleccionada { border-color: #C2761F; background-color: #FBF0E1; }
+.tarjeta-juego.usada { opacity: 0.35; }
+
+.canasta {
+  background-color: #FFFFFF;
+  border: 2px dashed #E4DFD3;
+  border-radius: 8px;
+  padding: 12px;
+  width: 260px;
+  min-height: 90px;
+  flex-grow: 1;
+  text-align: left;
+  cursor: pointer;
+}
+
+#mensaje-juego {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 18px;
+  text-align: left;
+  font-size: 14px;
+}
+
+#tiempo { color: #C2761F; font-weight: bold; }
+
+/* ===================================================================
+   RESULTADOS Y CERTIFICADO
+   =================================================================== */
+#puntaje { font-size: 46px; font-weight: bold; color: #123D2A; }
+
+.certificado {
+  background-color: #FFFFFF;
+  border: 2px solid #123D2A;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ===================================================================
+   TABLAS E INDICADORES
+   =================================================================== */
+table { width: 100%; border-collapse: collapse; background-color: #FFFFFF; }
+
+th, td {
+  border-bottom: 1px solid #E4DFD3;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+th { font-size: 13px; color: #5C6660; }
+
+.tabla-scroll { overflow-x: auto; border: 1px solid #E4DFD3; border-radius: 10px; }
+
+.estado {
+  background-color: #E3EFE5;
+  color: #123D2A;
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.estado-naranja { background-color: #FBF0E1; color: #8A5216; }
+
+.indicador {
+  background-color: #FFFFFF;
+  border: 1px solid #E4DFD3;
+  border-radius: 10px;
+  padding: 15px;
+  width: 200px;
+  flex-grow: 1;
+}
+
+.numero-grande { font-size: 26px; font-weight: bold; color: #123D2A; }
+
+.metodo {
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  color: #123D2A;
+}
+
+/* ===================================================================
+   PIE DE PAGINA 
+   =================================================================== */
+#pie {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 20px;
+  border-top: 1px solid #E4DFD3;
+  color: #5C6660;
+  font-size: 13px;
+}
+</style>
+</head>
+ 
+<body>
+
+<!-- ===================================================================
+     ENCABEZADO: visible en todas las ventanas
+     =================================================================== -->
+<header id="encabezado">
+  <div id="barra">
+    <span id="logo" data-ventana="inicio">Territorio Consciente</span>
+
+    <nav id="menu">
+      <button data-ventana="inicio">Inicio</button>
+      <button data-ventana="catalogo">Cursos</button>
+      <button data-ventana="aula">Aula</button>
+      <button data-ventana="progreso">Mi progreso</button>
+      <button data-ventana="creador">Panel creador</button>
+      <button data-ventana="admin">Administración</button>
+      <button data-ventana="login">Ingresar</button>
+    </nav>
+
+    <span id="contador-semillas">Semillas: <span id="semillas">0</span></span>
+  </div>
+</header>
+
+<!-- ===================================================================
+     VENTANA 1: INICIO
+     =================================================================== -->
+<section class="ventana visible" id="v-inicio">
+  <div id="portada">
+    <div id="portada-texto">
+      <h1>Educación ambiental comunitaria para defender nuestros territorios</h1>
+      <p>Cursos gratuitos, con fuentes citadas, hechos por colectivos y docentes.
+         Aprende a tu ritmo, evalúa lo aprendido jugando y apoya a quien produce el contenido.</p>
+      <button class="boton" data-ventana="catalogo">Ver los cursos</button>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <h2>Cursos abiertos</h2>
+    <p class="texto-gris">Cuatro rutas de formación creadas por colectivos de la región.</p>
+
+    <!-- Las tarjetas se generan con JavaScript a partir del arreglo "cursos" -->
+    <div class="fila" id="cursos-inicio"></div>
+
+    <div class="aviso">
+      Todo el contenido es gratuito. El micro-mecenazgo es voluntario: de cada aporte,
+      el 90% va al colectivo que creó el curso y el 10% sostiene la plataforma.
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     INICIO DE SESION
+     El formulario usa method="post": en un servidor real las credenciales
+     nunca viajan por la URL, como si ocurriria con GET.
+     =================================================================== -->
+<section class="ventana" id="v-login">
+  <div class="contenido">
+    <form class="formulario" id="form-login" action="/sesion" method="post">
+      <h2 style="text-align:center;">Iniciar sesión</h2>
+      <p class="texto-gris" style="text-align:center;">Plataforma comunitaria de educación ambiental</p>
+
+      <label for="correo">Correo electrónico</label>
+      <input type="email" id="correo" name="correo" value="estudiante@edu.co" required>
+
+      <label for="clave">Contraseña</label>
+      <input type="password" id="clave" name="clave" value="12345678" required>
+
+      <button type="submit" class="boton boton-ancho">Iniciar sesión</button>
+
+      <p class="texto-gris" style="text-align:center; margin-top:15px;">
+        ¿No tienes cuenta?
+        <button type="button" class="enlace-texto" data-ventana="registro">Regístrate aquí</button>
+      </p>
+    </form>
+  </div>
+</section>
+
+<!-- ===================================================================
+     REGISTRO
+     Aqui se hace la peticion POST al servidor simulado.
+     =================================================================== -->
+<section class="ventana" id="v-registro">
+  <div class="contenido">
+    <form class="formulario" id="form-registro" action="/usuarios" method="post">
+      <h2 style="text-align:center;">Crear cuenta</h2>
+
+      <label for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Sofía Ramírez" required>
+
+      <label for="correo2">Correo electrónico</label>
+      <input type="email" id="correo2" name="correo" placeholder="nombre@correo.co" required>
+
+      <label for="clave2">Contraseña</label>
+      <input type="password" id="clave2" name="clave" placeholder="Mínimo 8 caracteres" required>
+
+      <label for="rol">¿Cómo vas a usar la plataforma?</label>
+      <select id="rol" name="rol">
+        <option>Estudiante</option>
+        <option>Creador de contenido</option>
+      </select>
+
+      <button type="submit" class="boton boton-ancho" id="boton-registro">Crear cuenta</button>
+
+      <!-- Aquí JavaScript escribe el resultado de la petición -->
+      <div id="mensaje-registro"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ===================================================================
+     CATALOGO DE CURSOS
+     Tiene dos partes: los cursos locales (arreglo en memoria) y los
+     cursos que se traen del servidor con una peticion GET.
+     =================================================================== -->
+<section class="ventana" id="v-catalogo">
+  <div class="contenido">
+    <h2>Catálogo de cursos</h2>
+    <p class="texto-gris">Filtra por el tema que te interese.</p>
+
+    <div id="filtros" style="margin-bottom:18px;"></div>
+    <div class="fila" id="cursos-catalogo"></div>
+
+    <h3 style="margin-top:30px;">Cursos publicados por otros colectivos</h3>
+    
+
+    <div class="fila" id="cursos-servidor"></div>
+    <button class="boton boton-claro boton-pequeno" id="boton-recargar">Volver a consultar el servidor</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     DETALLE DEL CURSO
+     =================================================================== -->
+<section class="ventana" id="v-curso">
+  <div class="contenido">
+    <p class="ruta">Catálogo &gt; Detalle del curso</p>
+
+    <div class="fila">
+      <div class="caja" style="flex:2; min-width:300px;">
+        <p class="etiqueta" id="curso-etiqueta"></p>
+        <h2 id="curso-titulo"></h2>
+        <p class="texto-gris" id="curso-descripcion"></p>
+
+        <div class="video">Video de presentación (4:20)</div>
+
+        <h3>Contenido del curso</h3>
+        <ul id="curso-modulos" class="texto-gris"></ul>
+
+        <p class="fuente">
+          Fuentes: IDEAM, informes de la Contraloría sobre licenciamiento ambiental
+          y mediciones comunitarias de la Red de Guardianes del Agua.
+        </p>
+      </div>
+
+      <div class="caja" style="flex:1; min-width:240px;">
+        <p class="etiqueta">Creado por</p>
+        <p><strong>Colectivo Río Vivo</strong></p>
+        <p class="texto-gris">5 módulos - 4 evaluaciones jugables - certificado al terminar</p>
+        <button class="boton boton-ancho" data-ventana="aula">Entrar al aula</button>
+        <button class="boton boton-claro boton-ancho" data-ventana="aporte">Apoyar a este colectivo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     AULA (contenido de un modulo)
+     =================================================================== -->
+<section class="ventana" id="v-aula">
+  <div class="contenido">
+    <p class="ruta">Catálogo &gt; Protección de cuencas hídricas &gt; Módulo 3</p>
+
+    <div class="fila">
+      <div class="caja" style="width:250px; flex-grow:1;">
+        <h4>Módulos del curso</h4>
+        <div id="lista-modulos"></div>
+
+        <div style="margin-top:12px;">
+          <div class="barra-progreso"><div style="width:40%;"></div></div>
+          <p class="texto-gris" style="margin-top:6px;">2 de 5 módulos completados</p>
+        </div>
+      </div>
+
+      <div class="caja" style="flex:2; min-width:300px;">
+        <p class="etiqueta">Módulo 3</p>
+        <h2>Monitoreo comunitario de metales pesados</h2>
+
+        <p>Los metales pesados llegan a la cuenca por vertimientos de minería a cielo abierto
+           y por el arrastre de sedimentos tras las lluvias. Un monitoreo comunitario bien hecho
+           no reemplaza al laboratorio, pero produce una serie de datos constante, con fecha,
+           lugar y método.</p>
+
+        <p>En este módulo aprenderás a tomar muestras de agua en tres puntos de la microcuenca,
+           a registrar la turbidez con disco Secchi y a documentar la cadena de custodia.</p>
+
+        <div class="video">Video: toma de muestras paso a paso (8:14)</div>
+
+        <p class="fuente">Fuente: Protocolo de monitoreo participativo del agua, IDEAM (2023), capítulo 4.</p>
+
+        <button class="boton boton-claro" data-ventana="curso">Módulo anterior</button>
+        <button class="boton" id="boton-evaluar">Evaluar lo aprendido</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     EVALUACION EN FORMA DE JUEGO
+     Los cuatro tipos de juego comparten esta ventana.
+     =================================================================== -->
+<section class="ventana" id="v-juego">
+  <div class="contenido">
+    <div id="juego">
+      <div id="tipos-juego"></div>
+
+      <div style="display:flex; align-items:center; gap:12px; margin:20px 0;">
+        <span class="texto-gris" id="contador-preguntas"></span>
+        <div class="barra-progreso" style="flex:1;"><div id="barra-juego" style="width:0%;"></div></div>
+        <span id="tiempo"></span>
+      </div>
+
+      <div id="cuerpo-juego"></div>
+      <div id="mensaje-juego" style="display:none;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     RESULTADOS DE LA EVALUACION
+     =================================================================== -->
+<section class="ventana" id="v-resultados">
+  <div class="contenido contenido-angosto" style="text-align:center;">
+    <p class="etiqueta">Evaluación del módulo 3</p>
+    <p id="puntaje">0%</p>
+    <h2 id="titulo-resultado"></h2>
+    <p class="texto-gris" id="detalle-resultado"></p>
+
+    <div class="caja" style="text-align:left;">
+      <h3>Lo que conviene repasar</h3>
+      <p class="texto-gris">La cadena de custodia exige registrar hora, responsable y temperatura
+        de transporte. Sin esos tres datos la muestra pierde valor probatorio.</p>
+    </div>
+
+    <button class="boton boton-claro" id="boton-repetir">Volver a intentar</button>
+    <button class="boton" data-ventana="progreso">Ver mi progreso</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MI PROGRESO (panel del estudiante)
+     =================================================================== -->
+<section class="ventana" id="v-progreso">
+  <div class="contenido">
+    <h2>Mi progreso</h2>
+    <p class="texto-gris">Sofía Ramírez - estudiante desde marzo de 2026</p>
+
+    <div class="fila" style="margin-bottom:18px;">
+      <div class="indicador"><p class="texto-gris">Cursos en marcha</p><p class="numero-grande">2</p></div>
+      <div class="indicador"><p class="texto-gris">Módulos completados</p><p class="numero-grande">7</p></div>
+      <div class="indicador"><p class="texto-gris">Semillas</p><p class="numero-grande" id="semillas2">0</p></div>
+      <div class="indicador"><p class="texto-gris">Certificados</p><p class="numero-grande">1</p></div>
+    </div>
+
+    <div class="tabla-scroll">
+      <table>
+        <tr><th>Curso</th><th>Colectivo</th><th>Progreso</th><th></th></tr>
+        <tr>
+          <td>Protección de cuencas hídricas</td><td>Río Vivo</td><td>40%</td>
+          <td><button class="boton boton-pequeno" data-ventana="aula">Continuar</button></td>
+        </tr>
+        <tr>
+          <td>Litigio estratégico y consulta previa</td><td>Red Jurídica Ambiental</td><td>100%</td>
+          <td><button class="boton boton-pequeno boton-claro" data-ventana="certificado">Ver certificado</button></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     CERTIFICADO
+     =================================================================== -->
+<section class="ventana" id="v-certificado">
+  <div class="contenido contenido-angosto">
+    <p class="ruta">Mi progreso &gt; Certificado</p>
+
+    <div class="certificado">
+      <p class="etiqueta">Territorio Consciente</p>
+      <p class="texto-gris">Certifica que</p>
+      <h2>Sofía Ramírez</h2>
+      <p class="texto-gris">completó el curso</p>
+      <h3>Litigio estratégico y consulta previa frente a la megaminería</h3>
+      <p class="texto-gris">6 módulos - puntaje final 88% - 12 de septiembre de 2026</p>
+      <p class="texto-gris">Código de verificación: TC-2026-4F7A-92</p>
+    </div>
+
+    <p style="text-align:center; margin-top:18px;">
+      <button class="boton">Descargar en PDF</button>
+      <button class="boton boton-claro" data-ventana="aporte">Apoyar al colectivo</button>
+    </p>
+  </div>
+</section>
+
+<!-- ===================================================================
+     PANEL DEL CREADOR (micro-mecenazgo)
+     =================================================================== -->
+<section class="ventana" id="v-creador">
+  <div class="contenido">
+    <h2>Panel docente y micro-mecenazgo</h2>
+    <p class="texto-gris">Colectivo Río Vivo - 3 cursos publicados</p>
+
+    <div class="fila" style="margin-bottom:18px;">
+      <div class="indicador"><p class="texto-gris">Estudiantes activos</p><p class="numero-grande">1420</p></div>
+      <div class="indicador"><p class="texto-gris">Fondo solidario (90%)</p><p class="numero-grande">$1.152.000</p></div>
+      <div class="indicador"><p class="texto-gris">Mecenas del mes</p><p class="numero-grande">38</p></div>
+    </div>
+
+    <p>
+      <button class="boton" data-ventana="editor">Crear pregunta</button>
+      <button class="boton boton-naranja">Solicitar desembolso</button>
+    </p>
+
+    <div class="tabla-scroll">
+      <table>
+        <tr>
+          <th>Mecenas</th><th>Curso</th><th>Aporte</th>
+          <th>90% colectivo</th><th>10% plataforma</th><th>Estado</th>
+        </tr>
+        <tr>
+          <td>Camila Valverde</td><td>Protección de cuencas hídricas</td><td>$40.000</td>
+          <td>$36.000</td><td>$4.000</td><td><span class="estado">Confirmado</span></td>
+        </tr>
+        <tr>
+          <td>Mecenas anónimo</td><td>Protección de cuencas hídricas</td><td>$100.000</td>
+          <td>$90.000</td><td>$10.000</td><td><span class="estado">Confirmado</span></td>
+        </tr>
+        <tr>
+          <td>Esteban Morales</td><td>Mapeo participativo</td><td>$60.000</td>
+          <td>$54.000</td><td>$6.000</td><td><span class="estado estado-naranja">En proceso</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="aviso" style="margin-top:18px;">
+      En el MVP los pagos corren en modo de pruebas. Ningún dinero real se mueve todavía.
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     EDITOR DE PREGUNTAS
+     Un mismo formulario para los cuatro tipos de juego.
+     =================================================================== -->
+<section class="ventana" id="v-editor">
+  <div class="contenido contenido-angosto">
+    <p class="ruta">Panel creador &gt; Nueva pregunta</p>
+
+    <div class="caja">
+      <h2>Nueva pregunta</h2>
+      <p class="texto-gris">El tipo que elijas decide cómo se juega la pregunta.</p>
+
+      <label>Tipo de juego</label>
+      <div id="tipos-editor"></div>
+
+      <label for="enunciado">Enunciado</label>
+      <textarea id="enunciado" rows="3">¿Las plantaciones de eucalipto absorben menos agua freática que los bosques nativos?</textarea>
+
+      <div id="campos-editor"></div>
+
+      <label for="explicacion">Explicación para el estudiante</label>
+      <textarea id="explicacion" rows="2">El eucalipto tiene una evapotranspiración mayor y puede bajar el nivel freático.</textarea>
+
+      <button class="boton" data-ventana="creador">Guardar pregunta</button>
+      <button class="boton boton-claro" id="boton-probar">Probar el juego</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     APORTE (micro-mecenazgo del estudiante)
+     Tambien envia los datos al servidor con POST.
+     =================================================================== -->
+<section class="ventana" id="v-aporte">
+  <div class="contenido contenido-angosto">
+    <p class="ruta">Curso &gt; Apoyar</p>
+
+    <form class="caja" id="form-aporte" action="/aportes" method="post">
+      <h2>Apoyar al Colectivo Río Vivo</h2>
+      <p class="texto-gris">El curso seguirá siendo gratuito para todo el mundo. Tu aporte paga
+        las jornadas de campo y la edición de los videos.</p>
+
+      <label for="tipo-aporte">Tipo de aporte</label>
+      <select id="tipo-aporte" name="tipo">
+        <option>Donación única</option>
+        <option>Suscripción mensual</option>
+      </select>
+
+      <label for="monto">Monto en pesos</label>
+      <select id="monto" name="monto">
+        <option value="20000">$20.000</option>
+        <option value="40000" selected>$40.000</option>
+        <option value="100000">$100.000</option>
+      </select>
+
+      <div class="fila" style="margin-top:15px;">
+        <div class="indicador">
+          <p class="texto-gris">90% al colectivo</p>
+          <p class="numero-grande" id="parte-colectivo"></p>
+        </div>
+        <div class="indicador">
+          <p class="texto-gris">10% a la plataforma</p>
+          <p class="numero-grande" id="parte-plataforma"></p>
+        </div>
+      </div>
+
+      <button type="submit" class="boton boton-ancho" id="boton-aporte">Confirmar aporte</button>
+      <div id="mensaje-aporte"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ===================================================================
+     PANEL ADMINISTRATIVO
+     Incluye la tabla de metodos HTTP que usara cada caracteristica.
+     =================================================================== -->
+<section class="ventana" id="v-admin">
+  <div class="contenido">
+    <h2>Panel administrativo</h2>
+    <p class="texto-gris">Gestión de usuarios, cursos y aportes.</p>
+
+    <div class="fila" style="margin-bottom:18px;">
+      <div class="indicador"><p class="texto-gris">Usuarios</p><p class="numero-grande">3870</p></div>
+      <div class="indicador"><p class="texto-gris">Cursos publicados</p><p class="numero-grande">24</p></div>
+      <div class="indicador"><p class="texto-gris">Por aprobar</p><p class="numero-grande">2</p></div>
+      <div class="indicador"><p class="texto-gris">Certificados</p><p class="numero-grande">612</p></div>
+    </div>
+
+    <h3>Cursos por revisar</h3>
+    <div class="tabla-scroll" style="margin-bottom:18px;">
+      <table>
+        <tr><th>Curso</th><th>Colectivo</th><th>Enviado</th><th>Acciones</th></tr>
+        <tr>
+          <td>Agroecología urbana</td><td>Huerta Popular Esperanza</td><td>22/09/2026</td>
+          <td>
+            <button class="boton boton-pequeno">Aprobar</button>
+            <button class="boton boton-pequeno boton-claro">Devolver</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Desinformación climática</td><td>Observatorio de Medios</td><td>20/09/2026</td>
+          <td>
+            <button class="boton boton-pequeno">Aprobar</button>
+            <button class="boton boton-pequeno boton-claro">Devolver</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>Métodos HTTP de la aplicación</h3>
+    <p class="texto-gris">
+      En el prototipo solo están implementados GET y POST. PUT y DELETE quedan
+      documentados para cuando exista el backend propio.
+    </p>
+
+    <div class="tabla-scroll">
+      <table>
+        <tr><th>Método</th><th>Ruta</th><th>Qué hace</th><th>Estado</th></tr>
+        <tr><td class="metodo">GET</td><td>/cursos</td><td>Listar el catálogo</td><td><span class="estado">Implementado</span></td></tr>
+        <tr><td class="metodo">POST</td><td>/usuarios</td><td>Crear una cuenta</td><td><span class="estado">Implementado</span></td></tr>
+        <tr><td class="metodo">POST</td><td>/aportes</td><td>Registrar un aporte</td><td><span class="estado">Implementado</span></td></tr>
+        <tr><td class="metodo">PUT</td><td>/cursos/:id</td><td>Editar un curso</td><td><span class="estado estado-naranja">Pendiente</span></td></tr>
+        <tr><td class="metodo">DELETE</td><td>/cursos/:id</td><td>Despublicar un curso</td><td><span class="estado estado-naranja">Pendiente</span></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     PIE DE PÁGINA
+     =================================================================== -->
+<footer id="pie">
+  Prototipo navegable - Territorio Consciente - Grupo TAD - Programación orientada a la Web 2026B.
+  Datos locales de ejemplo; las peticiones al servidor usan la API simulada JSONPlaceholder.
+</footer>
+
+
+<script>
+/* ===================================================================
+   SECCIÓN A: NAVEGACIÓN ENTRE VENTANAS
+   Cualquier elemento con el atributo data-ventana cambia de pantalla.
+   =================================================================== */
+const mostrar = (nombre) => {
+  document.querySelectorAll('.ventana').forEach(v => v.classList.remove('visible'));
+  document.getElementById(`v-${nombre}`).classList.add('visible');
+  window.scrollTo(0, 0);
+};
+
+document.querySelectorAll('[data-ventana]').forEach(elemento => {
+  elemento.addEventListener('click', () => mostrar(elemento.dataset.ventana));
+});
+
+/* ===================================================================
+   CONEXION CON EL SERVIDOR (API simulada)
+   JSONPlaceholder responde a GET, POST, PUT y DELETE, pero no guarda
+   los datos de verdad: sirve para practicar el ciclo completo.
+   =================================================================== */
+const API_URL = 'https://jsonplaceholder.typicode.com/posts';
+
+/* --- GET: traer cursos publicados por otros colectivos --- */
+const obtenerCursosDelServidor = async () => {
+  try {
+    // fetch() usa GET por defecto. ?_limit=3 evita traer los 100 registros.
+    const respuesta = await fetch(`${API_URL}?_limit=3`);
+
+    // .ok es true si el codigo de estado esta entre 200 y 299
+    if (!respuesta.ok) {
+      throw new Error(`Error del servidor: ${respuesta.status}`);
+    }
+
+    return await respuesta.json();
+
+  } catch (error) {
+    console.error('No se pudieron obtener los cursos:', error);
+    return null;   // null avisa a quien llama que la petición falló
+  }
+};
+
+/* --- POST: enviar datos nuevos al servidor --- */
+const enviarAlServidor = async (datos) => {
+  const respuesta = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos)
+  });
+
+  if (!respuesta.ok) {
+    throw new Error(`Error al enviar: ${respuesta.status}`);
+  }
+
+  return await respuesta.json();
+};
+
+/* ===================================================================
+   DATOS LOCALES DE LOS CURSOS
+   =================================================================== */
+const cursos = [
+  {
+    etiqueta: 'Defensa del agua - Colectivo Río Vivo',
+    titulo: 'Protección de cuencas hídricas y monitoreo de metales pesados',
+    descripcion: 'Protocolos populares de toma de muestras y detección comunitaria de cianuro, plomo y mercurio.',
+    categoria: 'Agua',
+    color: ''
+  },
+  {
+    etiqueta: 'Litigio y derechos - Red Jurídica Ambiental',
+    titulo: 'Litigio estratégico y consulta previa frente a la megaminería',
+    descripcion: 'Herramientas constitucionales, Convenio 169 de la OIT y medidas cautelares.',
+    categoria: 'Derechos',
+    color: 'color-2'
+  },
+  {
+    etiqueta: 'Soberanía alimentaria - Huerta Popular Esperanza',
+    titulo: 'Agroecología urbana y bancos de semillas nativas',
+    descripcion: 'Cómo organizar bancos barriales de semillas y seleccionar variedades resistentes.',
+    categoria: 'Alimentación',
+    color: 'color-3'
+  },
+  {
+    etiqueta: 'Monitoreo - Observatorio de Medios',
+    titulo: 'Desinformación climática: cómo auditar el greenwashing',
+    descripcion: 'Revisión de campañas corporativas y de falsos certificados de carbono.',
+    categoria: 'Educación',
+    color: 'color-4'
+  }
+];
+
+const modulos = [
+  'Qué es una cuenca y quién la habita',
+  'Normativa ambiental aplicable',
+  'Monitoreo comunitario de metales pesados',
+  'Documentar evidencia con valor probatorio',
+  'Rutas de denuncia y acción colectiva'
+];
+
+/* --- Crea el elemento de una tarjeta de curso local --- */
+const crearTarjetaCurso = (curso, indice) => {
+  const tarjeta = document.createElement('article');
+  tarjeta.className = 'tarjeta-curso';
+  tarjeta.innerHTML = `
+    <div class="imagen-curso ${curso.color}"></div>
+    <p class="etiqueta">${curso.etiqueta}</p>
+    <h3>${curso.titulo}</h3>
+    <p class="texto-gris">${curso.descripcion}</p>
+    <button class="boton boton-pequeno">Entrar al aula</button>
+  `;
+
+  tarjeta.querySelector('button').addEventListener('click', () => abrirCurso(indice));
+  return tarjeta;
+};
+
+/* --- Crea la tarjeta de un curso que vino del servidor --- */
+const crearTarjetaDesdeAPI = (item) => {
+  const tarjeta = document.createElement('article');
+  tarjeta.className = 'tarjeta-curso';
+  tarjeta.innerHTML = `
+    <div class="imagen-curso color-2"></div>
+    <p class="etiqueta">Curso #${item.id} - sincronizado desde el servidor</p>
+    <h3>${item.title}</h3>
+    <p class="texto-gris">${item.body}</p>
+  `;
+  return tarjeta;
+};
+
+/* --- Dibuja las tarjetas locales, filtrando por categoría --- */
+const dibujarCursos = (idContenedor, categoria = 'Todos') => {
+  const contenedor = document.getElementById(idContenedor);
+  contenedor.innerHTML = '';
+
+  const visibles = cursos.filter(c => categoria === 'Todos' || c.categoria === categoria);
+
+  if (visibles.length === 0) {
+    contenedor.innerHTML = '<p class="texto-gris">Todavía no hay cursos en esta categoría.</p>';
+    return;
+  }
+
+  visibles.forEach(curso => {
+    contenedor.appendChild(crearTarjetaCurso(curso, cursos.indexOf(curso)));
+  });
+};
+
+/* --- Pide los cursos al servidor y los muestra --- */
+const cargarCursosDelServidor = async () => {
+  const contenedor = document.getElementById('cursos-servidor');
+
+  // Mensaje de carga: la petición de red no es instantánea
+  contenedor.innerHTML = '<p class="texto-gris">Cargando cursos del servidor...</p>';
+
+  const datos = await obtenerCursosDelServidor();
+  contenedor.innerHTML = '';
+
+  if (datos === null) {
+    contenedor.innerHTML = `
+      <div class="aviso aviso-error">
+        No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.
+      </div>`;
+    return;
+  }
+
+  datos.forEach(item => contenedor.appendChild(crearTarjetaDesdeAPI(item)));
+};
+
+document.getElementById('boton-recargar').addEventListener('click', cargarCursosDelServidor);
+
+/* ===================================================================
+   FILTRO DEL CATALOGO
+   =================================================================== */
+const categorias = ['Todos', 'Agua', 'Derechos', 'Alimentación', 'Educación'];
+
+const dibujarFiltros = () => {
+  const contenedor = document.getElementById('filtros');
+  contenedor.innerHTML = '';
+
+  categorias.forEach(categoria => {
+    const boton = document.createElement('button');
+    boton.className = 'tarjeta-juego';
+    boton.textContent = categoria;
+    boton.addEventListener('click', () => dibujarCursos('cursos-catalogo', categoria));
+    contenedor.appendChild(boton);
+  });
+};
+
+/* ===================================================================
+   DETALLE DEL CURSO Y LISTA DE MÓDULOS
+   =================================================================== */
+const abrirCurso = (indice) => {
+  const curso = cursos[indice];
+
+  document.getElementById('curso-etiqueta').textContent = curso.etiqueta;
+  document.getElementById('curso-titulo').textContent = curso.titulo;
+  document.getElementById('curso-descripcion').textContent = curso.descripcion;
+  document.getElementById('curso-modulos').innerHTML =
+    modulos.map((m, i) => `<li>Módulo ${i + 1}: ${m}</li>`).join('');
+
+  mostrar('curso');
+};
+
+const dibujarModulos = () => {
+  const contenedor = document.getElementById('lista-modulos');
+  contenedor.innerHTML = '';
+
+  modulos.forEach((nombre, i) => {
+    const boton = document.createElement('button');
+    boton.textContent = `${i + 1}. ${nombre}`;
+    if (i === 2) boton.className = 'modulo-actual';   // módulo en curso
+    boton.addEventListener('click', () => mostrar('aula'));
+    contenedor.appendChild(boton);
+  });
+};
+
+/* ===================================================================
+   DATOS DE LOS JUEGOS (evaluaciones)
+   =================================================================== */
+const juegos = {
+  mito: {
+    nombre: 'Verdadero / falso',
+    preguntas: [
+      {
+        texto: '¿Las plantaciones de eucalipto absorben menos agua freática que los bosques nativos?',
+        opciones: ['Verdadero', 'Falso'],
+        correcta: 1,
+        explicacion: 'Es al revés: el eucalipto tiene mayor evapotranspiración y baja el nivel freático.'
+      },
+      {
+        texto: '¿Una muestra de agua sin cadena de custodia sirve igual como prueba?',
+        opciones: ['Verdadero', 'Falso'],
+        correcta: 1,
+        explicacion: 'Sin hora, responsable y condiciones de transporte, la autoridad puede descartarla.'
+      }
+    ]
+  },
+  trivia: {
+    nombre: 'Selección múltiple',
+    preguntas: [
+      {
+        texto: '¿Qué instrumento mide la turbidez del agua en campo?',
+        opciones: ['Disco Secchi', 'pHmetro', 'Anemómetro', 'Luxómetro'],
+        correcta: 0,
+        explicacion: 'El disco Secchi mide la profundidad a la que deja de verse, es decir, la turbidez.'
+      },
+      {
+        texto: '¿Cuál metal es típico de la minería de oro?',
+        opciones: ['Mercurio', 'Potasio', 'Magnesio', 'Silicio'],
+        correcta: 0,
+        explicacion: 'El mercurio se usa para amalgamar el oro y termina en el sedimento y en los peces.'
+      }
+    ]
+  },
+  clasificar: {
+    nombre: 'Clasificación',
+    canastas: ['Protege la fuente hídrica', 'Amenaza la fuente hídrica'],
+    tarjetas: [
+      { texto: 'Reforestar la ribera', canasta: 0 },
+      { texto: 'Vertimiento sin tratar', canasta: 1 },
+      { texto: 'Monitoreo comunitario', canasta: 0 },
+      { texto: 'Dragado ilegal', canasta: 1 }
+    ]
+  },
+  conectar: {
+    nombre: 'Emparejamiento',
+    parejas: [
+      { mecanismo: 'Acción popular', protege: 'Derechos colectivos' },
+      { mecanismo: 'Tutela', protege: 'Derechos fundamentales' },
+      { mecanismo: 'Consulta previa', protege: 'Derechos de pueblos étnicos' }
+    ]
+  }
+};
+
+/* Estado del juego en curso */
+let juegoActual = 'mito';
+let preguntaActual = 0;
+let aciertos = 0;
+let segundos = 20;
+let cronometro = null;
+let tarjetaElegida = -1;
+let tarjetasUbicadas = [];
+let mecanismoElegido = -1;
+let parejasHechas = 0;
+
+/* Semillas: se guardan en localStorage para no perderlas al recargar */
+let semillas = Number(localStorage.getItem('semillas')) || 240;
+
+const actualizarSemillas = () => {
+  document.getElementById('semillas').textContent = semillas;
+  document.getElementById('semillas2').textContent = semillas;
+};
+
+const sumarSemillas = (cantidad) => {
+  semillas += cantidad;
+  localStorage.setItem('semillas', semillas);
+  actualizarSemillas();
+};
+
+/* ===================================================================
+   FUNCIONAMIENTO DE LOS JUEGOS
+   =================================================================== */
+const dibujarTiposJuego = () => {
+  const contenedor = document.getElementById('tipos-juego');
+  contenedor.innerHTML = '';
+
+  Object.keys(juegos).forEach(clave => {
+    const boton = document.createElement('button');
+    boton.className = clave === juegoActual ? 'tarjeta-juego seleccionada' : 'tarjeta-juego';
+    boton.textContent = juegos[clave].nombre;
+    boton.addEventListener('click', () => iniciarJuego(clave));
+    contenedor.appendChild(boton);
+  });
+};
+
+const iniciarJuego = (tipo) => {
+  juegoActual = tipo;
+  preguntaActual = 0;
+  aciertos = 0;
+  tarjetaElegida = -1;
+  tarjetasUbicadas = [];
+  mecanismoElegido = -1;
+  parejasHechas = 0;
+
+  mostrar('juego');
+  dibujarTiposJuego();
+  dibujarJuego();
+};
+
+const detenerCronometro = () => {
+  clearInterval(cronometro);
+  cronometro = null;
+  document.getElementById('tiempo').textContent = '';
+};
+
+const iniciarCronometro = () => {
+  segundos = 20;
+  document.getElementById('tiempo').textContent = `${segundos} s`;
+
+  cronometro = setInterval(() => {
+    segundos--;
+    document.getElementById('tiempo').textContent = `${segundos} s`;
+
+    if (segundos <= 0) {
+      detenerCronometro();
+      responder(-1);          // se acabo el tiempo
+    }
+  }, 1000);
+};
+
+const dibujarJuego = () => {
+  const cuerpo = document.getElementById('cuerpo-juego');
+  detenerCronometro();
+  document.getElementById('mensaje-juego').style.display = 'none';
+
+  /* --- Verdadero/falso y seleccion multiple --- */
+  if (juegoActual === 'mito' || juegoActual === 'trivia') {
+    const juego = juegos[juegoActual];
+    const pregunta = juego.preguntas[preguntaActual];
+
+    document.getElementById('contador-preguntas').textContent =
+      `Pregunta ${preguntaActual + 1} de ${juego.preguntas.length}`;
+    document.getElementById('barra-juego').style.width =
+      `${preguntaActual / juego.preguntas.length * 100}%`;
+
+    cuerpo.innerHTML = `
+      <p id="pregunta">${pregunta.texto}</p>
+      <p class="texto-gris">Elige una opción para continuar</p>
+      ${pregunta.opciones.map((o, i) => `<button class="opcion" id="opcion${i}">${o}</button>`).join('')}
+    `;
+
+    pregunta.opciones.forEach((o, i) => {
+      document.getElementById(`opcion${i}`).addEventListener('click', () => responder(i));
+    });
+
+    if (juegoActual === 'trivia') iniciarCronometro();
+  }
+
+  /* --- Clasificación --- */
+  if (juegoActual === 'clasificar') {
+    const juego = juegos.clasificar;
+
+    document.getElementById('contador-preguntas').textContent = 'Clasifica las cuatro tarjetas';
+    document.getElementById('barra-juego').style.width = '0%';
+
+    cuerpo.innerHTML = `
+      <p class="texto-gris">Toca una tarjeta y luego la caja donde va.</p>
+      <div id="tarjetas-juego"></div>
+      <div class="fila" style="margin-top:15px;">
+        ${juego.canastas.map((c, i) => `
+          <div class="canasta" id="canasta${i}">
+            <h4>${c}</h4>
+            <div id="contenido-canasta${i}" class="texto-gris"></div>
+          </div>`).join('')}
+      </div>
+    `;
+
+    juego.canastas.forEach((c, i) => {
+      document.getElementById(`canasta${i}`).addEventListener('click', () => soltarTarjeta(i));
+    });
+
+    dibujarTarjetas();
+  }
+
+  /* --- Emparejamiento --- */
+  if (juegoActual === 'conectar') {
+    const parejas = juegos.conectar.parejas;
+    const orden = [2, 0, 1];   // la columna derecha se desordena a propósito
+
+    document.getElementById('contador-preguntas').textContent = 'Une cada mecanismo con lo que protege';
+    document.getElementById('barra-juego').style.width = '0%';
+
+    cuerpo.innerHTML = `
+      <p class="texto-gris">Toca un mecanismo y luego su definición.</p>
+      <div class="fila">
+        <div style="flex:1; min-width:180px;">
+          ${parejas.map((p, i) => `<button class="opcion" id="mecanismo${i}">${p.mecanismo}</button>`).join('')}
+        </div>
+        <div style="flex:1; min-width:180px;">
+          ${orden.map(i => `<button class="opcion" id="proteccion${i}">${parejas[i].protege}</button>`).join('')}
+        </div>
+      </div>
+    `;
+
+    parejas.forEach((p, i) => {
+      document.getElementById(`mecanismo${i}`).addEventListener('click', () => elegirMecanismo(i));
+      document.getElementById(`proteccion${i}`).addEventListener('click', () => elegirProteccion(i));
+    });
+  }
+};
+
+/* --- Responder una pregunta de opciones --- */
+const responder = (elegida) => {
+  detenerCronometro();
+
+  const pregunta = juegos[juegoActual].preguntas[preguntaActual];
+  const correcta = pregunta.correcta;
+
+  document.getElementById(`opcion${correcta}`).classList.add('correcta');
+  if (elegida >= 0 && elegida !== correcta) {
+    document.getElementById(`opcion${elegida}`).classList.add('incorrecta');
+  }
+
+  let encabezado;
+  if (elegida === correcta) {
+    aciertos++;
+    sumarSemillas(20);
+    encabezado = 'Correcto (+20 semillas)';
+  } else if (elegida === -1) {
+    encabezado = 'Se acabó el tiempo';
+  } else {
+    encabezado = 'Todavía no';
+  }
+
+  const caja = document.getElementById('mensaje-juego');
+  caja.innerHTML = `
+    <strong>${encabezado}</strong><br>${pregunta.explicacion}<br><br>
+    <button class="boton boton-pequeno" id="boton-continuar">Continuar</button>
+  `;
+  caja.style.display = 'block';
+
+  document.getElementById('boton-continuar').addEventListener('click', siguientePregunta);
+};
+
+const siguientePregunta = () => {
+  const total = juegos[juegoActual].preguntas.length;
+
+  if (preguntaActual + 1 < total) {
+    preguntaActual++;
+    dibujarJuego();
+  } else {
+    terminarJuego(aciertos, total);
+  }
+};
+
+/* --- Clasificación --- */
+const dibujarTarjetas = () => {
+  const contenedor = document.getElementById('tarjetas-juego');
+  contenedor.innerHTML = '';
+
+  juegos.clasificar.tarjetas.forEach((t, i) => {
+    const boton = document.createElement('button');
+    boton.textContent = t.texto;
+
+    if (tarjetasUbicadas.includes(i)) {
+      boton.className = 'tarjeta-juego usada';
+    } else if (tarjetaElegida === i) {
+      boton.className = 'tarjeta-juego seleccionada';
+    } else {
+      boton.className = 'tarjeta-juego';
+      boton.addEventListener('click', () => {
+        tarjetaElegida = i;
+        dibujarTarjetas();
+      });
+    }
+
+    contenedor.appendChild(boton);
+  });
+};
+
+const soltarTarjeta = (canasta) => {
+  if (tarjetaElegida === -1) return;
+
+  const tarjetas = juegos.clasificar.tarjetas;
+  const destino = document.getElementById(`contenido-canasta${canasta}`);
+  destino.innerHTML += `<p>${tarjetas[tarjetaElegida].texto}</p>`;
+
+  if (tarjetas[tarjetaElegida].canasta === canasta) {
+    aciertos++;
+    sumarSemillas(10);
+  }
+
+  tarjetasUbicadas.push(tarjetaElegida);
+  tarjetaElegida = -1;
+  dibujarTarjetas();
+
+  document.getElementById('barra-juego').style.width =
+    `${tarjetasUbicadas.length / tarjetas.length * 100}%`;
+
+  if (tarjetasUbicadas.length === tarjetas.length) {
+    terminarJuego(aciertos, tarjetas.length);
+  }
+};
+
+/* --- Emparejamiento --- */
+const elegirMecanismo = (indice) => {
+  mecanismoElegido = indice;
+  document.getElementById(`mecanismo${indice}`).classList.add('correcta');
+};
+
+const elegirProteccion = (indice) => {
+  if (mecanismoElegido === -1) return;
+
+  const total = juegos.conectar.parejas.length;
+
+  if (mecanismoElegido === indice) {
+    document.getElementById(`proteccion${indice}`).classList.add('correcta');
+    parejasHechas++;
+    sumarSemillas(15);
+    document.getElementById('barra-juego').style.width = `${parejasHechas / total * 100}%`;
+
+    if (parejasHechas === total) terminarJuego(total, total);
+  } else {
+    document.getElementById(`mecanismo${mecanismoElegido}`).classList.remove('correcta');
+  }
+
+  mecanismoElegido = -1;
+};
+
+/* --- Fin de cualquier juego --- */
+const terminarJuego = (buenas, total) => {
+  const porcentaje = Math.round(buenas / total * 100);
+  const aprobado = porcentaje >= 70;
+
+  document.getElementById('puntaje').textContent = `${porcentaje}%`;
+  document.getElementById('titulo-resultado').textContent = aprobado ? 'Módulo aprobado' : 'Falta un poco';
+  document.getElementById('detalle-resultado').textContent = aprobado
+    ? `Respondiste bien ${buenas} de ${total}. El módulo queda completado.`
+    : `Respondiste bien ${buenas} de ${total}. Necesitas 70% para completar el módulo.`;
+
+  mostrar('resultados');
+};
+
+document.getElementById('boton-evaluar').addEventListener('click', () => iniciarJuego('mito'));
+document.getElementById('boton-probar').addEventListener('click', () => iniciarJuego('mito'));
+document.getElementById('boton-repetir').addEventListener('click', () => iniciarJuego(juegoActual));
+
+/* ===================================================================
+   FORMULARIO DE REGISTRO (peticion POST)
+   =================================================================== */
+const formRegistro = document.getElementById('form-registro');
+
+formRegistro.addEventListener('submit', async (evento) => {
+  // Evita que el navegador recargue la pagina y envie el formulario por su cuenta
+  evento.preventDefault();
+
+  const mensaje = document.getElementById('mensaje-registro');
+  const boton = document.getElementById('boton-registro');
+
+  const clave = document.getElementById('clave2').value;
+
+  // Validación en el cliente antes de gastar una petición de red
+  if (clave.length < 8) {
+    mensaje.innerHTML = '<div class="aviso aviso-error">La contraseña debe tener al menos 8 caracteres.</div>';
+    return;
+  }
+
+  const nuevoUsuario = {
+    title: document.getElementById('nombre').value,
+    body: document.getElementById('correo2').value,
+    rol: document.getElementById('rol').value
+  };
+
+  boton.disabled = true;
+  mensaje.innerHTML = '<p class="texto-gris">Enviando datos al servidor...</p>';
+
+  try {
+    const usuarioCreado = await enviarAlServidor(nuevoUsuario);
+    console.log('El servidor respondió con:', usuarioCreado);
+
+    mensaje.innerHTML = `
+      <div class="aviso">Cuenta creada. El servidor asignó el id ${usuarioCreado.id}.</div>`;
+
+    formRegistro.reset();
+    setTimeout(() => mostrar('catalogo'), 1500);
+
+  } catch (error) {
+    console.error(error);
+    mensaje.innerHTML = `
+      <div class="aviso aviso-error">No se pudo crear la cuenta. Intenta de nuevo.</div>`;
+  } finally {
+    boton.disabled = false;   // el botón se reactiva pase lo que pase
+  }
+});
+
+/* El login solo cambia de ventana: todavía no hay autenticación real */
+document.getElementById('form-login').addEventListener('submit', (evento) => {
+  evento.preventDefault();
+  mostrar('catalogo');
+});
+
+/* ===================================================================
+   MICRO-MECENAZGO (reparto 90/10 y petición POST)
+   =================================================================== */
+const selectMonto = document.getElementById('monto');
+
+const formatearPesos = (valor) => `$${valor.toLocaleString('es-CO')}`;
+
+const calcularReparto = () => {
+  const monto = Number(selectMonto.value);
+  document.getElementById('parte-colectivo').textContent = formatearPesos(monto * 0.9);
+  document.getElementById('parte-plataforma').textContent = formatearPesos(monto * 0.1);
+};
+
+selectMonto.addEventListener('change', calcularReparto);
+
+document.getElementById('form-aporte').addEventListener('submit', async (evento) => {
+  evento.preventDefault();
+
+  const mensaje = document.getElementById('mensaje-aporte');
+  const monto = Number(selectMonto.value);
+
+  const aporte = {
+    title: `Aporte de ${formatearPesos(monto)}`,
+    body: document.getElementById('tipo-aporte').value,
+    monto: monto,
+    colectivo: monto * 0.9,
+    plataforma: monto * 0.1
+  };
+
+  mensaje.innerHTML = '<p class="texto-gris">Registrando el aporte...</p>';
+
+  try {
+    const confirmacion = await enviarAlServidor(aporte);
+    mensaje.innerHTML = `
+      <div class="aviso">
+        Aporte registrado con el id ${confirmacion.id}. El colectivo recibe
+        ${formatearPesos(aporte.colectivo)}.
+      </div>`;
+  } catch (error) {
+    console.error(error);
+    mensaje.innerHTML = '<div class="aviso aviso-error">No se pudo registrar el aporte.</div>';
+  }
+});
+
+/* ===================================================================
+   EDITOR DE PREGUNTAS
+   Los campos del formulario cambian según el tipo de juego.
+   =================================================================== */
+const camposPorTipo = {
+  mito: `
+    <label>Respuesta correcta</label>
+    <select><option>Verdadero</option><option selected>Falso</option></select>`,
+  trivia: `
+    <label>Opciones</label>
+    <input type="text" value="Disco Secchi (correcta)">
+    <input type="text" value="pHmetro" style="margin-top:8px;">
+    <input type="text" value="Anemómetro" style="margin-top:8px;">`,
+  clasificar: `
+    <label>Categorías</label>
+    <input type="text" value="Protege la fuente hídrica">
+    <input type="text" value="Amenaza la fuente hídrica" style="margin-top:8px;">`,
+  conectar: `
+    <label>Pareja</label>
+    <input type="text" value="Acción popular">
+    <input type="text" value="Derechos colectivos" style="margin-top:8px;">`
+};
+
+const dibujarEditor = (tipo) => {
+  const contenedor = document.getElementById('tipos-editor');
+  contenedor.innerHTML = '';
+
+  Object.keys(juegos).forEach(clave => {
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = clave === tipo ? 'tarjeta-juego seleccionada' : 'tarjeta-juego';
+    boton.textContent = juegos[clave].nombre;
+    boton.addEventListener('click', () => dibujarEditor(clave));
+    contenedor.appendChild(boton);
+  });
+
+  document.getElementById('campos-editor').innerHTML = camposPorTipo[tipo];
+};
+
+/* ===================================================================
+   INSTRUCCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA
+   =================================================================== */
+dibujarCursos('cursos-inicio');
+dibujarCursos('cursos-catalogo');
+dibujarFiltros();
+dibujarModulos();
+dibujarTiposJuego();
+dibujarEditor('mito');
+calcularReparto();
+actualizarSemillas();
+cargarCursosDelServidor();   // primera petición GET al abrir la página
+</script>
+
+</body>
+</html>
